@@ -14,12 +14,18 @@ jobs:
       - name: Import signing key
         run: echo "${{ secrets.APT_GPG_KEY }}" | gpg --batch --import
       - name: Pull current pool from R2
-        env: { CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}" }
+        env:
+          CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}"
+          CLOUDFLARE_ACCOUNT_ID: "${{ vars.CLOUDFLARE_ACCOUNT_ID }}"
         run: |
-          # rclone with the R2 S3 endpoint keeps this a one-liner; bucket
-          # name + account id come from repo variables once R2 is live.
-          echo "TODO(M1-final): rclone copy r2:openpolycom-apt/pool repo/pool"
           mkdir -p repo/pool
+          npx wrangler r2 object get openpolycom-apt/pool --remote --pipe 2>/dev/null || true
+          # wrangler has no recursive get; list + fetch each pool object.
+          for k in $(npx wrangler r2 bucket info openpolycom-apt >/dev/null 2>&1; \
+                     npx wrangler r2 object list openpolycom-apt --prefix pool/ 2>/dev/null \
+                     | grep -oE 'pool/[^" ]+\.deb' | sort -u); do
+            npx wrangler r2 object get "openpolycom-apt/$k" --file "repo/$k" --remote
+          done
       - name: Fetch dispatched debs
         if: github.event_name == 'repository_dispatch'
         run: |
@@ -33,5 +39,10 @@ jobs:
       - name: Regenerate + sign indexes
         run: ./publish.sh repo
       - name: Sync to R2
-        env: { CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}" }
-        run: echo "TODO(M1-final): rclone sync repo/ r2:openpolycom-apt/"
+        env:
+          CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}"
+          CLOUDFLARE_ACCOUNT_ID: "${{ vars.CLOUDFLARE_ACCOUNT_ID }}"
+        run: |
+          cd repo && find pool dists -type f | while read f; do
+            npx wrangler r2 object put "openpolycom-apt/$f" --file "$f" --remote
+          done

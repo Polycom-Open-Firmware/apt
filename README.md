@@ -11,7 +11,7 @@ workspace (milestone M1).
 ```sh
 apt install op-archive-keyring   # or copy the key on first bootstrap
 echo 'deb [arch=arm64 signed-by=/usr/share/keyrings/openpolycom-archive-keyring.gpg] \
-  https://<R2-public-URL> stable main' > /etc/apt/sources.list.d/openpolycom.list
+  https://pub-1d222577af244182a265fc4d6a35b994.r2.dev stable main' > /etc/apt/sources.list.d/openpolycom.list
 ```
 
 Archive signing key: ed25519 `7A27D57B0045457E4C51A11EFAABA6E245033620`
