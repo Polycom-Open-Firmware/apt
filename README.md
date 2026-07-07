@@ -1,6 +1,6 @@
-# OpenPolycom apt repository
+# Poly apt repository
 
-The publication channel for `op-*` packages (profiles, apps, base plumbing,
+The publication channel for `poly-*` packages (profiles, apps, base plumbing,
 and eventually a cortex-a53 Chromium) consumed by the TC8/C60 image builders
 and by devices in `tc8-rw` maintenance mode.
 Architecture and conventions: `polycom_dev/PROFILES-PLAN.md` in the
@@ -9,8 +9,8 @@ workspace (milestone M1).
 ## Client setup
 
 ```sh
-apt install op-archive-keyring   # or copy the key on first bootstrap
-echo 'deb [arch=arm64 signed-by=/usr/share/keyrings/openpolycom-archive-keyring.gpg] \
+apt install poly-archive-keyring   # or copy the key on first bootstrap
+echo 'deb [arch=arm64 signed-by=/usr/share/keyrings/poly-archive-keyring.gpg] \
   https://pub-1d222577af244182a265fc4d6a35b994.r2.dev stable main' > /etc/apt/sources.list.d/openpolycom.list
 ```
 
