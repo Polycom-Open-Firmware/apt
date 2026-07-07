@@ -1,0 +1,37 @@
+name: Publish apt archive
+on:
+  repository_dispatch:
+    types: [publish-packages]
+  workflow_dispatch: {}
+concurrency:
+  group: apt-publish        # single writer, queued
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import signing key
+        run: echo "${{ secrets.APT_GPG_KEY }}" | gpg --batch --import
+      - name: Pull current pool from R2
+        env: { CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}" }
+        run: |
+          # rclone with the R2 S3 endpoint keeps this a one-liner; bucket
+          # name + account id come from repo variables once R2 is live.
+          echo "TODO(M1-final): rclone copy r2:openpolycom-apt/pool repo/pool"
+          mkdir -p repo/pool
+      - name: Fetch dispatched debs
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          echo '${{ toJson(github.event.client_payload) }}' > payload.json
+          # client_payload: { "run_id": ..., "repo": "owner/name" } — pull
+          # that run's 'debs' artifact.
+          gh run download "${{ github.event.client_payload.run_id }}" \
+            --repo "${{ github.event.client_payload.repo }}" \
+            --name debs --dir repo/pool
+        env: { GH_TOKEN: "${{ secrets.DISPATCH_TOKEN }}" }
+      - name: Regenerate + sign indexes
+        run: ./publish.sh repo
+      - name: Sync to R2
+        env: { CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}" }
+        run: echo "TODO(M1-final): rclone sync repo/ r2:openpolycom-apt/"
