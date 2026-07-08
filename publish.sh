@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# publish.sh — regenerate the Poly apt archive from a pool of .debs.
+# publish.sh — regenerate the OpenPolycom apt archive from a pool of .debs.
 # Stateless: indexes are rebuilt from pool/ every run (no reprepro db).
 #   ./publish.sh <repo-root>     # repo-root contains pool/ ; writes dists/
 # Signing: uses the op-archive key from the default gpg keyring
@@ -16,8 +16,8 @@ rm -rf dists && mkdir -p "$BIN"
 apt-ftparchive packages pool > "$BIN/Packages"
 gzip -9kf "$BIN/Packages"
 apt-ftparchive \
-  -o APT::FTPArchive::Release::Origin=Poly \
-  -o APT::FTPArchive::Release::Label=Poly \
+  -o APT::FTPArchive::Release::Origin=OpenPolycom \
+  -o APT::FTPArchive::Release::Label=OpenPolycom \
   -o APT::FTPArchive::Release::Suite=$SUITE \
   -o APT::FTPArchive::Release::Codename=$SUITE \
   -o APT::FTPArchive::Release::Components=$COMP \
