@@ -36,6 +36,11 @@ jobs:
             --repo "${{ github.event.client_payload.repo }}" \
             --name debs --dir repo/pool
         env: { GH_TOKEN: "${{ secrets.DISPATCH_TOKEN }}" }
+      - name: Add incoming/ debs (manual publish inbox)
+        run: |
+          if ls incoming/*.deb >/dev/null 2>&1; then
+            cp -v incoming/*.deb repo/pool/
+          fi
       - name: Regenerate + sign indexes
         run: ./publish.sh repo
       - name: Sync to R2

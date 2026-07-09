@@ -35,3 +35,10 @@ mkdir -p repo/pool && cp *.deb repo/pool/
 ./publish.sh repo
 # rclone or wrangler r2 object put the repo/ tree
 ```
+
+## Manual publish without DISPATCH_TOKEN
+
+Commit debs under `incoming/` and run the workflow (`gh workflow run` or the
+Actions UI). The publish job folds `incoming/*.deb` into the pool alongside
+whatever is already in R2. Remove them from `incoming/` after they land
+(they persist in the R2 pool).

@@ -1,0 +1,23 @@
+Architectures: arm64 all
+Codename: stable
+Components: main
+Date: Thu, 09 Jul 2026 04:23:32 +0000
+Label: OpenPolycom
+Origin: OpenPolycom
+Suite: stable
+MD5Sum:
+ fb384342150e9bd13622d7ed439825ee              150 Release
+ 19d0ce142e5c6b641cc7ff917a2f4152            10104 main/binary-arm64/Packages
+ 6df27ca0793dd717f270d701df9615db             4034 main/binary-arm64/Packages.gz
+SHA1:
+ f134e03256cf1af2f72f50086862fa5117127b11              150 Release
+ afbf20f5efec978602ff30adedb3fcfa52540f5f            10104 main/binary-arm64/Packages
+ 47ea316978e158cd5b9e22f3ab0d31b8513a2b04             4034 main/binary-arm64/Packages.gz
+SHA256:
+ 195bca9ba582829ffafdafe69c238bccff48beed908b269fd8090fbfc370f446              150 Release
+ 2cb58d87dd76f668b3395e8647af96101501cfda0d8559faf4375d4be0b35040            10104 main/binary-arm64/Packages
+ 6ddf15b2f29fcfe304b1a5bcd753eafb126a17bada2312c96cd5e3eb551322db             4034 main/binary-arm64/Packages.gz
+SHA512:
+ c4dd7a7cd4d49fa1c0367b8a713018318b873df2c16af6edcc947a3610a3686cb5437c09654b7cb7a341fa7fc1211f6de8bbed55df0dfb012bbfc6e6f2fc81fe              150 Release
+ 0ace46874395d97d2f6bf2149bedc3b8316e278c32c03257a638371d7875502702da1daba0ae24cb72c13120617b8dceb70e9c862e5d79e0f27aaa5931603aa6            10104 main/binary-arm64/Packages
+ 399f701fc316ff454db43fdcd74f7aa5de8e8f1ab06b81e7bba3aadcf243689b0c2de370983ef25ec1aefd0650a9e173b596a4559d0bbd85ae857b256465fe03             4034 main/binary-arm64/Packages.gz
