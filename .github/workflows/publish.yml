@@ -31,10 +31,15 @@ jobs:
         run: |
           echo '${{ toJson(github.event.client_payload) }}' > payload.json
           # client_payload: { "run_id": ..., "repo": "owner/name" } — pull
-          # that run's 'debs' artifact.
+          # that run's 'debs' artifact into a staging dir, then overwrite
+          # into the pool (the artifact re-includes unchanged debs already
+          # pulled from R2; gh run download refuses to clobber in place).
+          mkdir -p staged
           gh run download "${{ github.event.client_payload.run_id }}" \
             --repo "${{ github.event.client_payload.repo }}" \
-            --name debs --dir repo/pool
+            --name debs --dir staged
+          cp -vf staged/*.deb repo/pool/
+          rm -rf staged
         env: { GH_TOKEN: "${{ secrets.DISPATCH_TOKEN }}" }
       - name: Add incoming/ debs (manual publish inbox)
         run: |
