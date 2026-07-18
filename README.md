@@ -17,27 +17,17 @@ Archive signing key: ed25519 `7A27D57B0045457E4C51A11EFAABA6E245033620`
 on this repo + an offline copy held by the maintainers. Rotation = new key, new
 keyring package revision, re-publish.
 
-## How publishing works (single-writer)
+## Publishing
 
-Only this repo's CI writes to the R2 bucket. The `packages` repo builds
-its debs and sends a `repository_dispatch` (`event_type:
-publish-packages`) whose payload carries the sender's CI `run_id` (and
-repo); the workflow here downloads that run's `debs` artifact into
-`pool/`, runs `publish.sh` (stateless apt-ftparchive + GPG), and syncs
-`pool/` + `dists/` to R2. Concurrency group = one publish at a time —
-no index races.
+This repo is the single writer to the R2 bucket: the `packages` repo builds
+its debs and hands them off, and the publish job here regenerates and signs
+the indexes. The full pipeline — the three publish paths, the secret matrix,
+and how to add a package — is in **[PUBLISHING.md](PUBLISHING.md)**.
 
-## Local / manual publish
+Local one-off publish (regenerate indexes over a pool by hand):
 
 ```sh
 mkdir -p repo/pool && cp *.deb repo/pool/
 ./publish.sh repo
-# rclone or wrangler r2 object put the repo/ tree
+# then wrangler r2 object put the repo/ tree (maintainers only)
 ```
-
-## Manual publish without DISPATCH_TOKEN
-
-Commit debs under `incoming/` and run the workflow (`gh workflow run` or the
-Actions UI). The publish job folds `incoming/*.deb` into the pool alongside
-whatever is already in R2. Remove them from `incoming/` after they land
-(they persist in the R2 pool).
